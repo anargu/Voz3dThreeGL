@@ -4,6 +4,7 @@ var ground, character;
 var light;
 var textureLoader = new THREE.TextureLoader();
 var loader = new THREE.JSONLoader();
+var objLoader = new THREE.ObjectLoader();
 var isLoaded = false;
 var action = {}, mixer;
 var activeActionName = 'idle';
@@ -46,11 +47,11 @@ function init () {
     geometry.rotateX(-Math.PI / 2);
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     ground = new THREE.Mesh(geometry, material);
-    scene.add(ground);
+    // scene.add(ground);
 
   });
 
-  loader.load('./models/eva-animated.json', function (geometry, materials) {
+  loader.load('./models/voz_mesh_6.json', function (geometry, materials) {
     materials.forEach(function (material) {
       material.skinning = true;
     });
@@ -61,35 +62,38 @@ function init () {
 
     mixer = new THREE.AnimationMixer(character);
 
+    console.log(geometry.animations)
+
     action.hello = mixer.clipAction(geometry.animations[ 0 ]);
     action.idle = mixer.clipAction(geometry.animations[ 1 ]);
-    action.run = mixer.clipAction(geometry.animations[ 3 ]);
-    action.walk = mixer.clipAction(geometry.animations[ 4 ]);
+    // action.run = mixer.clipAction(geometry.animations[ 3 ]);
+    // action.walk = mixer.clipAction(geometry.animations[ 4 ]);
 
     action.hello.setEffectiveWeight(1);
     action.idle.setEffectiveWeight(1);
-    action.run.setEffectiveWeight(1);
-    action.walk.setEffectiveWeight(1);
+    // action.run.setEffectiveWeight(1);
+    // action.walk.setEffectiveWeight(1);
 
     action.hello.setLoop(THREE.LoopOnce, 0);
-    action.hello.clampWhenFinished = true;
+    action.idle.clampWhenFinished = true;
 
     action.hello.enabled = true;
     action.idle.enabled = true;
-    action.run.enabled = true;
-    action.walk.enabled = true;
+    // action.run.enabled = true;
+    // action.walk.enabled = true;
 
     scene.add(character);
 
     window.addEventListener('resize', onWindowResize, false);
-    window.addEventListener('click', onDoubleClick, false);
+    // window.addEventListener('click', onDoubleClick, false);
     console.log('Double click to change animation');
     animate();
 
     isLoaded = true;
 
-    action.walk.play();
+    action.idle.play();
   });
+
 }
 
 function fadeAction (name) {
@@ -147,3 +151,4 @@ function render () {
   mixer.update(delta);
   renderer.render(scene, camera);
 }
+

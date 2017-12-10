@@ -1,113 +1,122 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-	<meta charset='utf-8' />
-	<title>threejs-animation-workflow</title>
-	<meta name='viewport' content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'>
-	<link rel="shortcut icon" href="favicon.ico"/>
-	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+    <meta charset='utf-8'/>
+    <title>voz3D</title>
+    <meta name='viewport' content='width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-	<div class="control">
-		<nav>
-			<ul>
-				<li id="acciones"><a class="selected" href="#">Caminar</a>
-					<ul>
-						<li><a href="#">Caminar</a></li>
-						<li><a href="#">Correr</a></li>
-						<li><a href="#">Saludar</a></li>
-						<li><a href="#">Parado</a></li>
-					</ul>
-				</li>
-			</ul>
-		</nav>
-		<div id="speaker">
-			<button class="fab" onmousedown="startSpeak(event)" onmouseup="stopSpeak(event)">
-				<i class="material-icons">mic</i> 				
-			</button>
-		</div>
-		<div id="speechMessage">
-			<p id="message"></p>
-		</div>
+<div class="control">
+    <nav>
+        <ul>
+            <li id="acciones"><a class="selected" href="#">Caminar</a>
+                <ul>
+                    <li><a href="#">Caminar</a></li>
+                    <li><a href="#">Correr</a></li>
+                    <li><a href="#">Saludar</a></li>
+                    <li><a href="#">Parado</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="speaker">
+        <button class="fab" onmousedown="startSpeak(event)" onmouseup="stopSpeak(event)">
+            <i class="material-icons">mic</i>
+        </button>
+    </div>
+    <p id="info_upgrade">Web Speech API is not supported by this browser.
+        Upgrade to <a href="//www.google.com/chrome">Chrome</a>
+        version 25 or later.</p>
+    <div id="speechMessage">
+        <p id="message"></p>
+    </div>
 
-	</div>
-	<div id='container'></div>
-	<script src='js/libs/three.min.js'></script>
-	<script src="js/controls/OrbitControls.js"></script>
-	<script src="js/main.js"></script>
+</div>
+<div id='container'></div>
+<script src='js/libs/three.min.js'></script>
+<script src="js/controls/OrbitControls.js"></script>
+<script src="js/main.js"></script>
 
-	<script type="text/javascript">
-		let animations = {
-			Caminar: 'walk',
-			Correr: 'run',
-			Saludar: 'hello',
-			Parado: 'idle'
-		}
+<script type="text/javascript">
+  let animations = {
+    Caminar: 'walk',
+    Correr: 'run',
+    Saludar: 'hello',
+    Parado: 'idle'
+  }
 
-		function capitalizeFirstLetter(string) {
-		    return string.charAt(0).toUpperCase() + string.slice(1);
-		}
+  function capitalizeFirstLetter (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
 
-		let dropdownAcciones = document.getElementById("acciones")
-		dropdownAcciones.addEventListener('click', function (e) {
-			e = e || window.event;
-			let target = e.target || e.srcElement
-			dropdownAcciones.getElementsByClassName("selected")[0].innerText = target.innerText
-			
-			// three snippet code
-			fadeAction(animations[target.innerText]);
-			// console.log(animations[target.innerText])
-		})
+  let dropdownAcciones = document.getElementById('acciones')
+  dropdownAcciones.addEventListener('click', function (e) {
+    e = e || window.event
+    let target = e.target || e.srcElement
+    dropdownAcciones.getElementsByClassName('selected')[0].innerText = target.innerText
 
-		var recognition = null
+    // three snippet code
+    fadeAction(animations[target.innerText])
+    // console.log(animations[target.innerText])
+  })
 
-		if (!('webkitSpeechRecognition' in window)) {
-			upgrade();
-		} else {
-			recognition = new webkitSpeechRecognition();
-			recognition.continuous = false;
-			recognition.interimResults = false;
+  var recognition = null
 
-			recognition.onstart = function() { 
-				// console.log("onstart")
-			}
-			recognition.onresult = function(event) { 
-				// console.log("onresult")
-				let message = event.results[0][0].transcript
-				// console.log(message)
-				document.getElementById("message").innerText = message
-				if (animations[capitalizeFirstLetter(message)] !== undefined) {
-					let actionName = animations[capitalizeFirstLetter(message)]
-					dropdownAcciones.getElementsByClassName("selected")[0].innerText = capitalizeFirstLetter(message)
-					fadeAction(actionName);
-				}
+  if (!('webkitSpeechRecognition' in window)) {
+    upgrade()
+  } else {
+    recognition = new webkitSpeechRecognition()
+    recognition.continuous = false
+    recognition.interimResults = false
 
-			}
-			recognition.onerror = function(event) { 
-				// console.log("onerror")
-				console.log(event)
+    recognition.onstart = function () {
+      console.log("onstart")
+    }
+    recognition.onresult = function (event) {
+      // console.log("onresult")
+      let message = event.results[0][0].transcript
+      // console.log(message)
+      document.getElementById('message').innerText = message
+      if (animations[capitalizeFirstLetter(message)] !== undefined) {
+        let actionName = animations[capitalizeFirstLetter(message)]
+        dropdownAcciones.getElementsByClassName('selected')[0].innerText = capitalizeFirstLetter(message)
+        fadeAction(actionName)
+      }
 
-			}
-			recognition.onend = function() { 
-				// console.log("onend")
-			}
+    }
+    recognition.onerror = function (event) {
+      console.log("onerror")
+      console.log(event)
 
-			function startSpeak(event) {
-				final_transcript = '';
-				if (recognition != null) {
-					recognition.lang = 'es-PE';
-					recognition.start();				
-				} else {
-					console.log('recognition is null')
-				}
-			}
+    }
+    recognition.onend = function () {
+      console.log("onend")
+    }
 
-			function stopSpeak(event) {
-				recognition.stop();	
-			}
-		}
-	</script>
+    function startSpeak (event) {
+      console.log("onmousedown")
+      final_transcript = ''
+      if (recognition != null) {
+        recognition.lang = 'es-PE'
+        recognition.start()
+      } else {
+        console.log('recognition is null')
+      }
+    }
+
+    function stopSpeak (event) {
+      console.log("onmouseup")
+      recognition.stop()
+    }
+
+  }
+  function upgrade () {
+    document.getElementById('info_upgrade').style.visibility = 'visible'
+  }
+</script>
 </body>
 </html>
