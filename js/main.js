@@ -51,7 +51,7 @@ function init () {
 
   });
 
-  loader.load('./models/voz_mesh_6.json', function (geometry, materials) {
+  loader.load('./models/eva-animated2.json', function (geometry, materials) {
     materials.forEach(function (material) {
       material.skinning = true;
     });
