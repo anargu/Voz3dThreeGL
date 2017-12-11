@@ -51,7 +51,7 @@ function init () {
 
   });
 
-  loader.load('./models/eva-animated2.json', function (geometry, materials) {
+  loader.load('./models/basic_mesh_1.json', function (geometry, materials) {
     materials.forEach(function (material) {
       material.skinning = true;
     });
@@ -66,12 +66,12 @@ function init () {
 
     action.hello = mixer.clipAction(geometry.animations[ 0 ]);
     action.idle = mixer.clipAction(geometry.animations[ 1 ]);
-    // action.run = mixer.clipAction(geometry.animations[ 3 ]);
+    action.run = mixer.clipAction(geometry.animations[ 2 ]);
     // action.walk = mixer.clipAction(geometry.animations[ 4 ]);
 
     action.hello.setEffectiveWeight(1);
     action.idle.setEffectiveWeight(1);
-    // action.run.setEffectiveWeight(1);
+    action.run.setEffectiveWeight(1);
     // action.walk.setEffectiveWeight(1);
 
     action.hello.setLoop(THREE.LoopOnce, 0);
@@ -79,7 +79,7 @@ function init () {
 
     action.hello.enabled = true;
     action.idle.enabled = true;
-    // action.run.enabled = true;
+    action.run.enabled = true;
     // action.walk.enabled = true;
 
     scene.add(character);
@@ -91,7 +91,7 @@ function init () {
 
     isLoaded = true;
 
-    action.idle.play();
+    // action.idle.play();
   });
 
 }
@@ -147,8 +147,10 @@ function animate () {
 }
 
 function render () {
-  var delta = clock.getDelta();
-  mixer.update(delta);
+  let delta = clock.getDelta()
+  if (mixer !== undefined) {
+    mixer.update(delta);
+  }
   renderer.render(scene, camera);
 }
 
