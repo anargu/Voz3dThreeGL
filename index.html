@@ -7,18 +7,22 @@
     <link rel="shortcut icon" href="favicon.ico"/>
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:200" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
 <div class="control">
-    <nav>
+    <nav style="visibility: hidden;">
         <ul>
-            <li id="acciones"><a class="selected" href="#">Caminar</a>
+            <li id="acciones"><a class="selected" href="#">Atencion</a>
                 <ul>
-                    <li><a href="#">Caminar</a></li>
-                    <li><a href="#">Correr</a></li>
-                    <li><a href="#">Saludar</a></li>
-                    <li><a href="#">Parado</a></li>
+                    <li><a href="#">Acercame</a></li>
+                    <li><a href="#">Actividad</a></li>
+                    <li><a href="#">Amigos/Companeros</a></li>
+                    <li><a href="#">Asistencia</a></li>
+                    <li><a href="#">Atencion</a></li>
+                    <li><a href="#">Ba&ntilde;o</a></li>
+                    <li><a href="#">Bien</a></li>
                 </ul>
             </li>
         </ul>
@@ -31,10 +35,32 @@
     <p id="info_upgrade">Web Speech API is not supported by this browser.
         Upgrade to <a href="//www.google.com/chrome">Chrome</a>
         version 25 or later.</p>
-    <div id="speechMessage">
-        <p id="message"></p>
-    </div>
 
+
+</div>
+<div class="search-container">
+    <div class="search-box">
+        <div>
+            <input type="text" id="input-text" class="search-input"
+                   placeholder="Buscar en el diccionario"
+                   autofocus list="words">
+            <i id="input_img" class="material-icons">search</i>
+            <datalist id="words">
+                <option value="Acercame">
+                <option value="Actividad">
+                <option value="Amigos/Companeros">
+                <option value="Asistencia">
+                <option value="Atencion">
+                <option value="Ba&ntilde;o">
+                <option value="Bien">
+            </datalist>
+        </div>
+    </div>
+    <div id="speechMessage2">
+        <span><i id="icon-result-speech" class="material-icons">volume_up</i></span>
+        <p id="message">
+        </p>
+    </div>
 </div>
 <div id='container'></div>
 <script src='js/libs/three.min.js'></script>
@@ -43,11 +69,17 @@
 
 <script type="text/javascript">
   let animations = {
-    Caminar: 'walk',
-    Correr: 'run',
-    Saludar: 'hello',
-    Parado: 'idle'
+    Acercarme: 'hello',
+    Actividad: 'run',
+    Amigos: 'walk',
+    Asistencia: 'idle',
+    Atencion: 'idle',
+    Bano: 'idle',
+    Bien: 'idle'
   }
+
+  document.getElementById("icon-result-speech").style.visibility = 'hidden'
+
 
   function capitalizeFirstLetter (string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
@@ -60,7 +92,8 @@
     dropdownAcciones.getElementsByClassName('selected')[0].innerText = target.innerText
 
     // three snippet code
-    fadeAction(animations[target.innerText])
+    // stackAnimations.push(animations[target.innerText])
+    // fadeAction(stackAnimations[0])
     // console.log(animations[target.innerText])
   })
 
@@ -74,17 +107,19 @@
     recognition.interimResults = false
 
     recognition.onstart = function () {
-      console.log("onstart")
+      // console.log("onstart")
     }
     recognition.onresult = function (event) {
       // console.log("onresult")
       let message = event.results[0][0].transcript
-      // console.log(message)
+
+      document.getElementById("icon-result-speech").style.visibility = 'visible'
       document.getElementById('message').innerText = message
-      if (animations[capitalizeFirstLetter(message)] !== undefined) {
-        let actionName = animations[capitalizeFirstLetter(message)]
-        dropdownAcciones.getElementsByClassName('selected')[0].innerText = capitalizeFirstLetter(message)
-        fadeAction(actionName)
+      let actionNames = processTranscript(message)
+      stackAnimations = actionNames
+      console.log('animation stack', stackAnimations)
+      if (stackAnimations.length > 0) {
+        fadeAction(stackAnimations[0])
       }
 
     }
@@ -94,11 +129,11 @@
 
     }
     recognition.onend = function () {
-      console.log("onend")
+      // console.log("onend")
     }
 
     function startSpeak (event) {
-      console.log("onmousedown")
+      // console.log("onmousedown")
       final_transcript = ''
       if (recognition != null) {
         recognition.lang = 'es-PE'
@@ -109,7 +144,7 @@
     }
 
     function stopSpeak (event) {
-      console.log("onmouseup")
+      // console.log("onmouseup")
       recognition.stop()
     }
 
@@ -117,6 +152,21 @@
   function upgrade () {
     document.getElementById('info_upgrade').style.visibility = 'visible'
   }
+
+  function processTranscript(transcript) {
+    let words = transcript.split(" ")
+    let keywords = words.filter(function (word) {
+      return (animations[capitalizeFirstLetter(word)] !== undefined)
+    }).map(function (item) {
+      return animations[capitalizeFirstLetter(item)]
+    })
+    return keywords
+  }
+</script>
+<script>
+    document.getElementById('input-text').addEventListener('change', function (ev) {
+      console.log(ev)
+    })
 </script>
 </body>
 </html>

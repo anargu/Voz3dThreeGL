@@ -9,6 +9,8 @@ var isLoaded = false;
 var action = {}, mixer;
 var activeActionName = 'idle';
 
+var stackAnimations = []
+
 var arrAnimations = [
   'idle',
   'walk',
@@ -32,7 +34,7 @@ function init () {
   container.appendChild(renderer.domElement);
 
   camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 1.2, 2.5);
+  camera.position.set(0, 2, -12.5);
   listener = new THREE.AudioListener();
   camera.add(listener);
 
@@ -51,35 +53,49 @@ function init () {
 
   });
 
-  loader.load('./models/basic_mesh_1.json', function (geometry, materials) {
+  loader.load('./models/per_5_5.json', function (geometry, materials) {
     materials.forEach(function (material) {
       material.skinning = true;
     });
+
     character = new THREE.SkinnedMesh(
       geometry,
       new THREE.MeshFaceMaterial(materials)
     );
 
-    mixer = new THREE.AnimationMixer(character);
 
-    console.log(geometry.animations)
+    mixer = new THREE.AnimationMixer(character);
+    mixer.addEventListener( 'finished', function(e) {
+      stackAnimations.shift()
+      if (stackAnimations.length > 0) {
+        fadeAction(stackAnimations[0])
+      }
+    })
+    // console.log(geometry.animations)
 
     action.hello = mixer.clipAction(geometry.animations[ 0 ]);
-    action.idle = mixer.clipAction(geometry.animations[ 1 ]);
-    action.run = mixer.clipAction(geometry.animations[ 2 ]);
-    // action.walk = mixer.clipAction(geometry.animations[ 4 ]);
+    // action.idle = mixer.clipAction(geometry.animations[ 1 ]);
+    // action.run = mixer.clipAction(geometry.animations[ 3 ]);
+    // action.walk = mixer.clipAction(geometry.animations[ 2 ]); // 4
 
     action.hello.setEffectiveWeight(1);
-    action.idle.setEffectiveWeight(1);
-    action.run.setEffectiveWeight(1);
+    // action.idle.setEffectiveWeight(1);
+    // action.run.setEffectiveWeight(1);
     // action.walk.setEffectiveWeight(1);
 
     action.hello.setLoop(THREE.LoopOnce, 0);
-    action.idle.clampWhenFinished = true;
+    // action.idle.setLoop(THREE.LoopOnce, 0);
+    // action.run.setLoop(THREE.LoopOnce, 0);
+    // action.walk.setLoop(THREE.LoopOnce, 0);
+
+    action.hello.clampWhenFinished = true;
+    // action.idle.clampWhenFinished = true;
+    // action.run.clampWhenFinished = true;
+    // action.walk.clampWhenFinished = true;
 
     action.hello.enabled = true;
-    action.idle.enabled = true;
-    action.run.enabled = true;
+    // action.idle.enabled = true;
+    // action.run.enabled = true;
     // action.walk.enabled = true;
 
     scene.add(character);
@@ -88,28 +104,27 @@ function init () {
     // window.addEventListener('click', onDoubleClick, false);
     console.log('Double click to change animation');
     animate();
-
     isLoaded = true;
 
     // action.idle.play();
+    action.hello.play();
   });
 
 }
 
 function fadeAction (name) {
-  var from = action[ activeActionName ].play();
+  // var from = action[ activeActionName ].play();
   var to = action[ name ].play();
 
-  from.enabled = true;
+  // from.enabled = true;
   to.enabled = true;
 
   if (to.loop === THREE.LoopOnce) {
     to.reset();
   }
 
-  from.crossFadeTo(to, 0.3);
+  // from.crossFadeTo(to, 0.3);
   activeActionName = name;
-
 }
 
 function onWindowResize () {
@@ -147,7 +162,7 @@ function animate () {
 }
 
 function render () {
-  let delta = clock.getDelta()
+  var delta = clock.getDelta()
   if (mixer !== undefined) {
     mixer.update(delta);
   }
