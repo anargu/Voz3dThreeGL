@@ -8,36 +8,53 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:200" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.5.1/css/iziModal.min.css">
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.5.1/js/iziModal.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-<div class="control">
-    <nav style="visibility: hidden;">
-        <ul>
-            <li id="acciones"><a class="selected" href="#">Atencion</a>
-                <ul>
-                    <li><a href="#">Acercame</a></li>
-                    <li><a href="#">Actividad</a></li>
-                    <li><a href="#">Amigos/Companeros</a></li>
-                    <li><a href="#">Asistencia</a></li>
-                    <li><a href="#">Atencion</a></li>
-                    <li><a href="#">Ba&ntilde;o</a></li>
-                    <li><a href="#">Bien</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
+<div class="fab-speaker">
+    <p id="info_upgrade">Web Speech API is not supported by this browser.
+        Upgrade to <a href="//www.google.com/chrome">Chrome</a>
+        version 25 or later.</p>
     <div id="speaker">
         <button class="fab" onmousedown="startSpeak(event)" onmouseup="stopSpeak(event)">
             <i class="material-icons">mic</i>
         </button>
     </div>
-    <p id="info_upgrade">Web Speech API is not supported by this browser.
-        Upgrade to <a href="//www.google.com/chrome">Chrome</a>
-        version 25 or later.</p>
-
-
 </div>
+
+<div class="fab-feedback">
+    <button class="fab fab-alternative trigger">
+        <i class="material-icons">message</i>
+    </button>
+</div>
+<!-- Modal structure -->
+<div id="modal">
+    <!-- Page content -->
+    <div>
+        <div class="container-input">
+            <input id="feedback-title" type="text" class="feedback-input" required="" placeholder="Titulo">
+        </div>
+        <div class="container-input">
+            <textarea id="feedback-message" placeholder="Mensaje" type="text" class="feedback-input" required="" rows="4"></textarea>
+        </div>
+        <div class="container-input">
+            <button class="feedback-button">ENVIAR</button>
+        </div>
+    </div>
+</div>
+
+<div class="banner-container">
+    <img src="assets/logo.png" class="banner-image">
+</div>
+
 <div class="search-container">
     <div class="search-box">
         <div>
@@ -46,13 +63,13 @@
                    autofocus list="words">
             <i id="input_img" class="material-icons">search</i>
             <datalist id="words">
-                <option value="Acercame">
-                <option value="Actividad">
-                <option value="Amigos/Companeros">
-                <option value="Asistencia">
-                <option value="Atencion">
-                <option value="Ba&ntilde;o">
-                <option value="Bien">
+                <option value="Acercame"></option>
+                <option value="Actividad"></option>
+                <option value="Amigos/Companeros"></option>
+                <option value="Asistencia"></option>
+                <option value="Atencion"></option>
+                <option value="Ba&ntilde;o"></option>
+                <option value="Bien"></option>
             </datalist>
         </div>
     </div>
@@ -62,111 +79,28 @@
         </p>
     </div>
 </div>
+
 <div id='container'></div>
-<script src='js/libs/three.min.js'></script>
-<script src="js/controls/OrbitControls.js"></script>
-<script src="js/main.js"></script>
 
 <script type="text/javascript">
-  let animations = {
-    Acercarme: 'hello',
-    Actividad: 'run',
-    Amigos: 'walk',
-    Asistencia: 'idle',
-    Atencion: 'idle',
-    Bano: 'idle',
-    Bien: 'idle'
-  }
-
-  document.getElementById("icon-result-speech").style.visibility = 'hidden'
-
-
-  function capitalizeFirstLetter (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-  }
-
-  let dropdownAcciones = document.getElementById('acciones')
-  dropdownAcciones.addEventListener('click', function (e) {
-    e = e || window.event
-    let target = e.target || e.srcElement
-    dropdownAcciones.getElementsByClassName('selected')[0].innerText = target.innerText
-
-    // three snippet code
-    // stackAnimations.push(animations[target.innerText])
-    // fadeAction(stackAnimations[0])
-    // console.log(animations[target.innerText])
-  })
-
-  var recognition = null
-
-  if (!('webkitSpeechRecognition' in window)) {
-    upgrade()
-  } else {
-    recognition = new webkitSpeechRecognition()
-    recognition.continuous = false
-    recognition.interimResults = false
-
-    recognition.onstart = function () {
-      // console.log("onstart")
-    }
-    recognition.onresult = function (event) {
-      // console.log("onresult")
-      let message = event.results[0][0].transcript
-
-      document.getElementById("icon-result-speech").style.visibility = 'visible'
-      document.getElementById('message').innerText = message
-      let actionNames = processTranscript(message)
-      stackAnimations = actionNames
-      console.log('animation stack', stackAnimations)
-      if (stackAnimations.length > 0) {
-        fadeAction(stackAnimations[0])
-      }
-
-    }
-    recognition.onerror = function (event) {
-      console.log("onerror")
-      console.log(event)
-
-    }
-    recognition.onend = function () {
-      // console.log("onend")
-    }
-
-    function startSpeak (event) {
-      // console.log("onmousedown")
-      final_transcript = ''
-      if (recognition != null) {
-        recognition.lang = 'es-PE'
-        recognition.start()
-      } else {
-        console.log('recognition is null')
-      }
-    }
-
-    function stopSpeak (event) {
-      // console.log("onmouseup")
-      recognition.stop()
-    }
-
-  }
-  function upgrade () {
-    document.getElementById('info_upgrade').style.visibility = 'visible'
-  }
-
-  function processTranscript(transcript) {
-    let words = transcript.split(" ")
-    let keywords = words.filter(function (word) {
-      return (animations[capitalizeFirstLetter(word)] !== undefined)
-    }).map(function (item) {
-      return animations[capitalizeFirstLetter(item)]
-    })
-    return keywords
-  }
+  $("#modal").iziModal({
+    title: 'Dejanos tu feedback',
+    subtitle: 'Para seguir mejorando ;)',
+    headerColor: '#646eff',
+    theme: 'Light',
+    fullscreen: true,
+    focusInput: false
+  });
+  $(document).on('click', '.trigger', function (event) {
+    event.preventDefault();
+    $('#modal').iziModal('open');
+  });
 </script>
-<script>
-    document.getElementById('input-text').addEventListener('change', function (ev) {
-      console.log(ev)
-    })
-</script>
+
+<script src='js/libs/three.min.js'></script>
+<script src="js/libs/OrbitControls.js"></script>
+<script src="js/main.js"></script>
+<script src="js/interactors.js"></script>
+
 </body>
 </html>

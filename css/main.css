@@ -32,105 +32,25 @@ a:hover {
 }
 
 /* custom */
-.control {
+.fab-speaker {
 	/*background-color: black;*/
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	right: 0;
-	width: 150px;
-	height: 100vh;
 	z-index: 1;
 }
 
-nav {
-	font-family: 'VT323', monospace;
-	font-size: 25px;
-	font-style: normal;
-	line-height: 12px;
-	text-align: center;
-}
-
-nav ul ul {
-	display: none;
-}
-
-nav ul li:hover > ul {
-	display: block;
-}
-
-nav ul {
-	list-style: none;
-	position: relative;
-	/*display: inline-table;*/
-}
-
-nav ul:after {
-	content: "";
-	clear: both;
-	display: block;
-}
-
-nav ul li {
-	margin: -1px 2px;
-	border: 1px solid white;
-	border-radius: 0px;
-	float: left;
-	margin: 5px;
-}
-
-nav ul li a {
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	height: 30px;
-	padding: 3px 8px;
-	color: white;
-	text-decoration: none;
-}
-
-nav ul li:hover {
-	background: none;
-}
-
-nav > ul > li >a:hover {
-	color: black;
-	background: white;
-}
-
-nav ul ul {
-	border-radius: 0px;
-	padding: 0 0px;
-	position: absolute;
-	top: 100%;
-	margin-left: -95px;
-}
-
-nav ul ul li {
-	float: none;
-	border: 1px solid white;
-	border-radius: 0px;
-	position: relative;
-}
-
-nav ul ul li a {
-	color: white;
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	height: 30px;
-	text-decoration: none;
-}
-
-nav ul ul li a:hover {
-	background: white;
-	color: black;
+.fab-feedback {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    padding: 20px;
 }
 
 #speaker{
     margin: 20px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
+	float: right;
 }
 
 .fab {
@@ -143,6 +63,16 @@ nav ul ul li a:hover {
 	text-align:center;
 }
 
+.fab-primary {
+    background-color: #1f558b;
+    color:#FFF;
+}
+
+.fab-alternative {
+    background-color: #1f558b;
+    color:#FFF;
+}
+
 .fab:hover {
 	background-color: white;
 	color: black;
@@ -152,8 +82,45 @@ nav ul ul li a:hover {
 	background-color: #e05454;
 	color: white;
 }
-
+.fab-alternative:hover {
+    background-color: #2b7e8b;
+    color:#FFF;
+}
+.fab-alternative:active  {
+    background-color: white;
+    color:black;
+}
 .fab:focus {outline:0;}
+
+
+.banner-container {
+    position: absolute;
+    z-index: 10;
+}
+.banner-image {
+    transform :translateX(-36px);
+    width: 72px;
+}
+
+@media screen and (max-device-width: 600px) {
+    .banner-container {
+        left: 50%;
+        bottom: 0;
+        text-align: center;
+    }
+}
+@media screen and (min-device-width: 601px) {
+    .banner-container {
+        top: 10px;
+        right: 10px;
+        text-align: left;
+    }
+    .banner-image {
+        transform: translateX(0px);
+        width: 72px;
+    }
+}
+
 
 
 #speechMessage {
@@ -234,4 +201,56 @@ input::-webkit-calendar-picker-indicator {
 }
 #words {
 
+}
+
+/* INPUT TEXT */
+.feedback-input{
+    border:2px solid rgba(100, 110, 255, 0.5);
+    font-size:1.25em;
+    padding:.25em .5em .3125em;
+    color: rgba(100, 110, 255, 0.5);
+    border-radius:.25em;
+    background:transparent;
+    transition:all .100s;
+}
+.feedback-button{
+    background-color: rgba(100, 110, 255, 1);
+    font-size:1em;
+    padding:.25em .5em .3125em;
+    color: rgba(255, 243, 248, 1);
+    border-radius:.25em;
+    transition:all .100s;
+    text-decoration: none;
+    border: none;
+    font-family: 'Work Sans', sans-serif;
+    -moz-box-shadow: #383f8e 0 6px, #646eff 0 6px 5px;
+    -webkit-box-shadow: #383f8e 0 6px, #646eff 0 6px 5px;
+    box-shadow: #383f8e 0 6px, #646eff 0 6px 5px;
+    -moz-transform: translateY(-6px);
+    -ms-transform: translateY(-6px);
+    -webkit-transform: translateY(-6px);
+    transform: translateY(-6px);
+}
+.feedback-button:focus{
+    outline: none;
+}
+.feedback-button:hover {
+    -moz-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+    -moz-box-shadow: #383f8e 0 5px, #646eff 0 5px 3px;
+    -webkit-box-shadow: #383f8e 0 5px, #646eff 0 5px 3px;
+    box-shadow: #383f8e 0 5px, #646eff 0 5px 3px;
+}
+.feedback-button:active {
+    -moz-transform: translateY(0px);
+    -ms-transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+    transform: translateY(0px);
+    box-shadow: none;
+}
+.container-input {
+    text-align: left;
+    padding: 10px 20px;
 }

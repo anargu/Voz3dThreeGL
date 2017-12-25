@@ -1,10 +1,9 @@
-var clock, container, camera, scene, renderer, controls, listener;
+var clock, container, camera,
+  scene, renderer, controls, listener,
+  ground, character, light;
 
-var ground, character;
-var light;
 var textureLoader = new THREE.TextureLoader();
 var loader = new THREE.JSONLoader();
-var objLoader = new THREE.ObjectLoader();
 var isLoaded = false;
 var action = {}, mixer;
 var activeActionName = 'idle';
@@ -23,7 +22,6 @@ init();
 
 function init () {
   clock = new THREE.Clock();
-
   scene = new THREE.Scene();
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -33,9 +31,10 @@ function init () {
   container = document.getElementById('container');
   container.appendChild(renderer.domElement);
 
+  listener = new THREE.AudioListener();
+
   camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 2, -12.5);
-  listener = new THREE.AudioListener();
   camera.add(listener);
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -50,7 +49,6 @@ function init () {
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     ground = new THREE.Mesh(geometry, material);
     // scene.add(ground);
-
   });
 
   loader.load('./models/per_5_5.json', function (geometry, materials) {
@@ -101,7 +99,6 @@ function init () {
     scene.add(character);
 
     window.addEventListener('resize', onWindowResize, false);
-    // window.addEventListener('click', onDoubleClick, false);
     console.log('Double click to change animation');
     animate();
     isLoaded = true;
@@ -109,7 +106,6 @@ function init () {
     // action.idle.play();
     action.hello.play();
   });
-
 }
 
 function fadeAction (name) {
