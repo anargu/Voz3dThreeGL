@@ -43,7 +43,7 @@ function init () {
   light = new THREE.AmbientLight(0xffffff, 1);
   scene.add(light);
 
-  textureLoader.load('textures/ground.png', function (texture) {
+  textureLoader.load('../textures/ground.png', function (texture) {
     var geometry = new THREE.PlaneBufferGeometry(2, 2);
     geometry.rotateX(-Math.PI / 2);
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
@@ -51,7 +51,7 @@ function init () {
     // scene.add(ground);
   });
 
-  loader.load('./models/per_5_5.json', function (geometry, materials) {
+  loader.load('../models/per_5_5.json', function (geometry, materials) {
     materials.forEach(function (material) {
       material.skinning = true;
     });
